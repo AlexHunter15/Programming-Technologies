@@ -1,372 +1,220 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Информационная Система</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Real Estate Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        header { background-color: #333; color: white; padding: 10px 20px; }
+        header nav ul { list-style: none; margin: 0; padding: 0; display: flex; }
+        header nav ul li { margin-right: 15px; }
+        header nav ul li a { color: white; text-decoration: none; }
+        main > section { display: none; padding: 20px; }
+        main > section#home { display: block; }
+        form { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 8px; margin-bottom: 10px; }
+        button { padding: 10px 20px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
 </head>
 <body>
-    <!-- Заголовок (header) -->
     <header>
-        <h1>Информационная система для управления объектами недвижимости</h1>
         <nav>
             <ul>
-                <li><a href="#home">Главная</a></li>
-                <li><a href="#add-info">Добавить информацию</a></li>
-                <li><a href="#edit-info">Редактировать информацию</a></li>
-                <li><a href="#delete-info">Удалить информацию</a></li>
-                <li><a href="#search-info">Поиск информации</a></li>
-                <li><a href="#login" id="login-link">Вход</a></li>
-                <li id="logout-link" style="display:none;"><a href="#home">Выход</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#add">Add Property</a></li>
+                <li><a href="#edit">Edit Property</a></li>
+                <li><a href="#delete">Delete Property</a></li>
+                <li><a href="#search">Search Property</a></li>
             </ul>
         </nav>
     </header>
-    
-    <!-- Основное содержимое -->
     <main>
         <section id="home">
-            <h2>Добро пожаловать!</h2>
-            <p>Выберите действие из меню, чтобы управлять информацией о помещениях.</p>
+            <h1>Welcome to Real Estate Management</h1>
         </section>
 
-        <!-- Форма входа -->
-        <section id="login" style="display:none;">
-            <h2>Вход</h2>
-            <form id="login-form">
-                <label for="username">Имя пользователя:</label>
-                <input type="text" id="username" required>
-                <label for="role">Роль:</label>
-                <select id="role">
-                    <option value="tenant">Арендатор</option>
-                    <option value="admin">Администратор</option>
-                </select>
-                <button type="submit">Войти</button>
-            </form>
-        </section>
-
-        <!-- Форма добавления информации -->
-        <section id="add-info" style="display:none;">
-            <h2>Добавить информацию о новом помещении</h2>
+        <section id="add">
+            <h1>Add Property</h1>
             <form id="add-form">
-                <label for="title">Название помещения:</label>
+                <label for="title">Title:</label>
                 <input type="text" id="title" required>
-                <label for="location">Местоположение:</label>
+
+                <label for="location">Location:</label>
                 <input type="text" id="location" required>
-                <label for="area">Площадь (кв. м):</label>
+
+                <label for="area">Area (sq.m):</label>
                 <input type="number" id="area" required>
-                <button type="submit">Добавить помещение</button>
+
+                <button type="submit">Add</button>
             </form>
         </section>
 
-        <!-- Форма редактирования информации -->
-        <section id="edit-info" style="display:none;">
-            <h2>Редактировать информацию о помещении</h2>
+        <section id="edit">
+            <h1>Edit Property</h1>
             <form id="edit-form">
-                <label for="edit-id">ID помещения:</label>
+                <label for="edit-id">Property ID:</label>
                 <input type="number" id="edit-id" required>
-                <label for="new-title">Новое название:</label>
+
+                <label for="new-title">New Title:</label>
                 <input type="text" id="new-title">
-                <label for="new-location">Новое местоположение:</label>
+
+                <label for="new-location">New Location:</label>
                 <input type="text" id="new-location">
-                <label for="new-area">Новая площадь (кв. м):</label>
+
+                <label for="new-area">New Area (sq.m):</label>
                 <input type="number" id="new-area">
-                <button type="submit">Сохранить изменения</button>
+
+                <button type="submit">Update</button>
             </form>
         </section>
 
-        <!-- Форма удаления информации -->
-        <section id="delete-info" style="display:none;">
-            <h2>Удалить помещение</h2>
+        <section id="delete">
+            <h1>Delete Property</h1>
             <form id="delete-form">
-                <label for="delete-id">ID помещения:</label>
+                <label for="delete-id">Property ID:</label>
                 <input type="number" id="delete-id" required>
-                <button type="submit">Удалить помещение</button>
+                <button type="submit">Delete</button>
             </form>
         </section>
 
-        <!-- Форма поиска информации -->
-        <section id="search-info" style="display:none;">
-            <h2>Поиск информации</h2>
+        <section id="search">
+            <h1>Search Property</h1>
             <form id="search-form">
-                <label for="search-query">Введите критерии поиска:</label>
-                <input type="text" id="search-query" placeholder="Название, местоположение и т.д." required>
-                <button type="submit">Найти</button>
+                <label for="search-query">Search:</label>
+                <input type="text" id="search-query">
+                <button type="submit">Search</button>
             </form>
-            <div id="search-results">
-                <!-- Здесь будут отображаться результаты поиска -->
-            </div>
+            <div id="search-results"></div>
         </section>
     </main>
 
-    <!-- Нижняя информационная часть (footer) -->
-    <footer>
-        <p>&copy; 2024 Информационная система недвижимости</p>
-    </footer>
+    <script>
+        class PostList {
+            constructor() {
+                this.key = 'ObjInf';
+                this.data = [];
+            }
 
-    <!-- Подключение JavaScript -->
-    <script src="app.js"></script>
+            save() {
+                localStorage.setItem(this.key, JSON.stringify(this.data));
+            }
+
+            restore() {
+                const storedData = localStorage.getItem(this.key);
+                this.data = storedData ? JSON.parse(storedData) : [];
+            }
+
+            get nextId() {
+                return this.data.length ? Math.max(...this.data.map(obj => obj.id)) + 1 : 1;
+            }
+
+            add(property) {
+                this.data.push(property);
+                this.save();
+            }
+
+            update(id, updates) {
+                const property = this.data.find(prop => prop.id === id);
+                if (property) Object.assign(property, updates);
+                this.save();
+                return property;
+            }
+
+            delete(id) {
+                const index = this.data.findIndex(prop => prop.id === id);
+                if (index !== -1) {
+                    this.data.splice(index, 1);
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            search(query) {
+                const lowerQuery = query.toLowerCase();
+                return this.data.filter(prop =>
+                    (prop.title || '').toLowerCase().includes(lowerQuery) ||
+                    (prop.location || '').toLowerCase().includes(lowerQuery) ||
+                    (prop.area || '').toString().includes(lowerQuery)
+                );
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const model = new PostList();
+            model.restore();
+
+            const navLinks = document.querySelectorAll('header nav ul li a');
+            const sections = document.querySelectorAll('main > section');
+            const resultsContainer = document.getElementById('search-results');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('href').substring(1);
+                    sections.forEach(section => {
+                        section.style.display = section.id === target ? 'block' : 'none';
+                    });
+                });
+            });
+
+            document.getElementById('add-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('title').value;
+                const location = document.getElementById('location').value;
+                const area = parseInt(document.getElementById('area').value);
+
+                model.add({ id: model.nextId, title, location, area });
+                alert('Property added successfully!');
+                e.target.reset();
+            });
+
+            document.getElementById('edit-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = parseInt(document.getElementById('edit-id').value);
+                const updates = {
+                    title: document.getElementById('new-title').value || undefined,
+                    location: document.getElementById('new-location').value || undefined,
+                    area: parseInt(document.getElementById('new-area').value) || undefined,
+                };
+
+                if (model.update(id, updates)) {
+                    alert('Property updated successfully!');
+                    e.target.reset();
+                } else {
+                    alert('Property not found!');
+                }
+            });
+
+            document.getElementById('delete-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = parseInt(document.getElementById('delete-id').value);
+                if (model.delete(id)) {
+                    alert('Property deleted successfully!');
+                    e.target.reset();
+                } else {
+                    alert('Property not found!');
+                }
+            });
+
+            document.getElementById('search-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const query = document.getElementById('search-query').value;
+                const results = model.search(query);
+                resultsContainer.innerHTML = results.length
+                    ? results.map(prop => `
+                        <p>
+                            <strong>ID:</strong> ${prop.id}, 
+                            <strong>Title:</strong> ${prop.title}, 
+                            <strong>Location:</strong> ${prop.location}, 
+                            <strong>Area:</strong> ${prop.area} sq.m
+                        </p>`).join('')
+                    : '<p>No results found.</p>';
+            });
+        });
+    </script>
 </body>
 </html>
-
-
-<style>
-/* Сброс стилей */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
-}
-
-header, footer {
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-}
-
-header h1, footer p {
-    margin: 0;
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 10px;
-}
-
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-}
-
-main {
-    padding: 20px;
-}
-
-h2 {
-    color: #5a67d8;
-    margin-bottom: 10px;
-}
-
-form label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-form input, form select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-form button {
-    background-color: #5a67d8;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-form button:hover {
-    background-color: #4c51bf;
-}
-
-.hint {
-    font-size: 0.9em;
-    color: #666;
-}
-
-footer p {
-    font-size: 0.9em;
-}
-</style>
-<script>
-class Model {
-  constructor(storageKey = 'objectData') {
-    this.storageKey = storageKey;
-    this.data = this.restore();
-  }
-
-  save() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.data));
-  }
-
-  restore() {
-    const storedData = localStorage.getItem(this.storageKey);
-    return storedData ? JSON.parse(storedData) : [];
-  }
-
-  add(obj) {
-    this.data.push(obj);
-    this.save();
-    return true;
-  }
-
-  remove(id) {
-    const index = this.data.findIndex((obj) => obj.id === id);
-    if (index === -1) return false;
-    this.data.splice(index, 1);
-    this.save();
-    return true;
-  }
-
-  edit(id, updatedFields) {
-    const index = this.data.findIndex((obj) => obj.id === id);
-    if (index === -1) return false;
-    this.data[index] = { ...this.data[index], ...updatedFields };
-    this.save();
-    return true;
-  }
-
-  getAll() {
-    return this.data;
-  }
-
-  filter(filterConfig) {
-    let filteredData = [...this.data];
-    if (filterConfig.author) {
-      filteredData = filteredData.filter(obj => obj.author === filterConfig.author);
-    }
-    if (filterConfig.createdAt) {
-      filteredData = filteredData.filter(
-        obj => new Date(obj.createdAt).toDateString() === new Date(filterConfig.createdAt).toDateString()
-      );
-    }
-    return filteredData;
-  }
-}
-
-// Add initial data if localStorage is empty
-if (!localStorage.getItem('objectData')) {
-  const objData = [
-     { id: '1', description: 'Описание объекта 1', createdAt: new Date('2024-01-01'), author: 'Иван Иванов', photoLink: 'https://example.com/photo1.jpg' },
-  { id: '2', description: 'Описание объекта 2', createdAt: new Date('2024-01-02'), author: 'Петр Петров', photoLink: 'https://example.com/photo2.jpg' },
-  { id: '3', description: 'Описание объекта 3', createdAt: new Date('2024-01-03'), author: 'Анна Смирнова' },
-  { id: '4', description: 'Описание объекта 4', createdAt: new Date('2024-01-04'), author: 'Иван Иванов' },
-  { id: '5', description: 'Описание объекта 5', createdAt: new Date('2024-01-05'), author: 'Мария Сидорова', photoLink: 'https://example.com/photo5.jpg' },
-  { id: '6', description: 'Описание объекта 6', createdAt: new Date('2024-01-06'), author: 'Дмитрий Васильев' },
-  { id: '7', description: 'Описание объекта 7', createdAt: new Date('2024-01-07'), author: 'Сергей Кузнецов' },
-  { id: '8', description: 'Описание объекта 8', createdAt: new Date('2024-01-08'), author: 'Анна Смирнова' },
-  { id: '9', description: 'Описание объекта 9', createdAt: new Date('2024-01-09'), author: 'Иван Иванов' },
-  { id: '10', description: 'Описание объекта 10', createdAt: new Date('2024-01-10'), author: 'Ольга Николаева', photoLink: 'https://example.com/photo10.jpg' },
-  { id: '11', description: 'Описание объекта 11', createdAt: new Date('2024-01-11'), author: 'Мария Сидорова' },
-  { id: '12', description: 'Описание объекта 12', createdAt: new Date('2024-01-12'), author: 'Сергей Кузнецов' },
-  { id: '13', description: 'Описание объекта 13', createdAt: new Date('2024-01-13'), author: 'Дмитрий Васильев' },
-  { id: '14', description: 'Описание объекта 14', createdAt: new Date('2024-01-14'), author: 'Анна Смирнова' },
-  { id: '15', description: 'Описание объекта 15', createdAt: new Date('2024-01-15'), author: 'Иван Иванов' },
-  { id: '16', description: 'Описание объекта 16', createdAt: new Date('2024-01-16'), author: 'Ольга Николаева' },
-  { id: '17', description: 'Описание объекта 17', createdAt: new Date('2024-01-17'), author: 'Сергей Кузнецов' },
-  { id: '18', description: 'Описание объекта 18', createdAt: new Date('2024-01-18'), author: 'Дмитрий Васильев', photoLink: 'https://example.com/photo18.jpg' },
-  { id: '19', description: 'Описание объекта 19', createdAt: new Date('2024-01-19'), author: 'Мария Сидорова' },
-  { id: '20', description: 'Описание объекта 20', createdAt: new Date('2024-01-20'), author: 'Иван Иванов', photoLink: 'https://example.com/photo20.jpg' },
-
-  ];
-  localStorage.setItem('objectData', JSON.stringify(objData));
-}
-class View {
-  static renderObjects(objects) {
-    const objectList = document.getElementById('object-list');
-    objectList.innerHTML = '';
-    objects.forEach(obj => {
-      const objCard = document.createElement('div');
-      objCard.className = 'object-card';
-      objCard.innerHTML = `
-        <p><strong>ID:</strong> ${obj.id}</p>
-        <p><strong>Description:</strong> ${obj.description}</p>
-        <p><strong>Author:</strong> ${obj.author}</p>
-        <p><strong>Date:</strong> ${new Date(obj.createdAt).toLocaleDateString()}</p>
-        <div class="controls">
-          <button onclick="controller.editObject('${obj.id}')">Edit</button>
-          <button onclick="controller.deleteObject('${obj.id}')">Delete</button>
-        </div>
-      `;
-      objectList.appendChild(objCard);
-    });
-  }
-
-  static renderUserInfo(user = 'Guest') {
-    const userInfo = document.getElementById('user-info');
-    userInfo.innerText = `Logged in as: ${user}`;
-  }
-}
-class Controller {
-  constructor(model, view) {
-    this.model = model;
-    this.view = view;
-
-    this.view.renderUserInfo('Ivan Ivanov');
-    this.view.renderObjects(this.model.getAll());
-  }
-
-  addNewObject() {
-    const description = document.getElementById('add-description').value;
-    const photoLink = document.getElementById('add-photo').value;
-
-    const newObj = {
-      id: (this.model.getAll().length + 1).toString(),
-      description,
-      createdAt: new Date(),
-      author: 'Ivan Ivanov',
-      photoLink
-    };
-
-    if (description.length > 200) {
-      alert('Description too long!');
-      return;
-    }
-
-    this.model.add(newObj);
-    this.view.renderObjects(this.model.getAll());
-    alert('Object added successfully!');
-  }
-
-  deleteObject(id) {
-    this.model.remove(id);
-    this.view.renderObjects(this.model.getAll());
-    alert('Object deleted successfully!');
-  }
-
-  editObject(id) {
-    const newDescription = prompt('Enter new description (max 200 chars):');
-    if (!newDescription || newDescription.length > 200) {
-      alert('Invalid description!');
-      return;
-    }
-
-    this.model.edit(id, { description: newDescription });
-    this.view.renderObjects(this.model.getAll());
-    alert('Object updated successfully!');
-  }
-
-  applyFilter() {
-    const author = document.getElementById('filter-author').value;
-    const date = document.getElementById('filter-date').value;
-
-    const filterConfig = {};
-    if (author) filterConfig.author = author;
-    if (date) filterConfig.createdAt = date;
-
-    const filteredObjs = this.model.filter(filterConfig);
-    this.view.renderObjects(filteredObjs);
-  }
-}
-
-const model = new Model();
-const view = new View();
-const controller = new Controller(model, view);
-
-</script>
