@@ -1,4 +1,167 @@
-<script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информационная Система</title>
+    <style>
+        /* Стили оставлены без изменений из предыдущего примера */
+        /* Сброс стилей */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header, footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header h1, footer p {
+            margin: 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        h2 {
+            color: #5a67d8;
+            margin-bottom: 10px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        form button {
+            background-color: #5a67d8;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        form button:hover {
+            background-color: #4c51bf;
+        }
+
+        .hint {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        footer p {
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Информационная система для управления объектами недвижимости</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#add-info">Добавить информацию</a></li>
+                <li><a href="#edit-info">Редактировать информацию</a></li>
+                <li><a href="#delete-info">Удалить информацию</a></li>
+                <li><a href="#search-info">Поиск информации</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home">
+            <h2>Добро пожаловать!</h2>
+        </section>
+
+        <section id="add-info" style="display:none;">
+            <h2>Добавить помещение</h2>
+            <form id="add-form">
+                <label for="title">Название:</label>
+                <input type="text" id="title" required>
+                <label for="location">Местоположение:</label>
+                <input type="text" id="location" required>
+                <label for="area">Площадь:</label>
+                <input type="number" id="area" required>
+                <button type="submit">Добавить</button>
+            </form>
+        </section>
+
+        <section id="edit-info" style="display:none;">
+            <h2>Редактировать помещение</h2>
+            <form id="edit-form">
+                <label for="edit-id">ID:</label>
+                <input type="number" id="edit-id" required>
+                <label for="new-title">Название:</label>
+                <input type="text" id="new-title">
+                <label for="new-location">Местоположение:</label>
+                <input type="text" id="new-location">
+                <label for="new-area">Площадь:</label>
+                <input type="number" id="new-area">
+                <button type="submit">Обновить</button>
+            </form>
+        </section>
+
+        <section id="delete-info" style="display:none;">
+            <h2>Удалить помещение</h2>
+            <form id="delete-form">
+                <label for="delete-id">ID:</label>
+                <input type="number" id="delete-id" required>
+                <button type="submit">Удалить</button>
+            </form>
+        </section>
+
+        <section id="search-info" style="display:none;">
+            <h2>Поиск помещений</h2>
+            <form id="search-form">
+                <label for="search-query">Критерии:</label>
+                <input type="text" id="search-query">
+                <button type="submit">Найти</button>
+            </form>
+            <div id="search-results"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Информационная система</p>
+    </footer>
+
+    <script>
     // Model
     class PropertyModel {
         constructor() {
@@ -203,3 +366,6 @@
         new PropertyController();
     });
 </script>
+
+</body>
+</html>
