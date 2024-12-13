@@ -105,7 +105,9 @@
     </footer>
 
     <!-- Подключение JavaScript -->
-    <script src="app.js"></script>
+      <script src="model.js"></script>
+  <script src="view.js"></script>
+  <script src="controller.js"></script>
 </body>
 </html>
 
@@ -277,6 +279,8 @@ if (!localStorage.getItem('objectData')) {
   ];
   localStorage.setItem('objectData', JSON.stringify(objData));
 }
+    </script>
+<script>
 class View {
   static renderObjects(objects) {
     const objectList = document.getElementById('object-list');
@@ -303,6 +307,8 @@ class View {
     userInfo.innerText = `Logged in as: ${user}`;
   }
 }
+    </script>
+<script>
 class Controller {
   constructor(model, view) {
     this.model = model;
