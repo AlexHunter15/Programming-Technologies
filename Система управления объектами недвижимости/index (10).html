@@ -105,9 +105,7 @@
     </footer>
 
     <!-- Подключение JavaScript -->
-      <script src="model.js"></script>
-  <script src="view.js"></script>
-  <script src="controller.js"></script>
+      <script src="app.js"></script>
 </body>
 </html>
 
@@ -197,182 +195,179 @@ footer p {
 }
 </style>
 <script>
-class Model {
-  constructor(storageKey = 'objectData') {
-    this.storageKey = storageKey;
-    this.data = this.restore();
-  }
+document.addEventListener('DOMContentLoaded', () => {
+    const loginLink = document.getElementById('login-link');
+    const logoutLink = document.getElementById('logout-link');
+    const sections = document.querySelectorAll('main > section');
+    const navLinks = document.querySelectorAll('header nav ul li a');
 
-  save() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.data));
-  }
+    class PostList {
+        constructor() {
+            this.key = 'ObjInf'; // Ключ для localStorage
+            this.data = [];
+        }
 
-  restore() {
-    const storedData = localStorage.getItem(this.storageKey);
-    return storedData ? JSON.parse(storedData) : [];
-  }
+        save() {
+            localStorage.setItem(this.key, JSON.stringify(this.data));
+        }
 
-  add(obj) {
-    this.data.push(obj);
-    this.save();
-    return true;
-  }
+        restore() {
+            const storedData = localStorage.getItem(this.key);
+            if (storedData) {
+                this.data = JSON.parse(storedData);
+            } else {
+                // Начальный набор данных, если localStorage пуст
+                this.data = [
+                    { id: 1, title: 'Офис на Ленина', location: 'ул. Ленина, 10', area: 100 },
+                    { id: 2, title: 'Склад на Мира', location: 'ул. Мира, 25', area: 300 },
+                ];
+                this.save();
+            }
+        }
 
-  remove(id) {
-    const index = this.data.findIndex((obj) => obj.id === id);
-    if (index === -1) return false;
-    this.data.splice(index, 1);
-    this.save();
-    return true;
-  }
+        get nextId() {
+            return this.data.length ? Math.max(...this.data.map(obj => obj.id)) + 1 : 1;
+        }
 
-  edit(id, updatedFields) {
-    const index = this.data.findIndex((obj) => obj.id === id);
-    if (index === -1) return false;
-    this.data[index] = { ...this.data[index], ...updatedFields };
-    this.save();
-    return true;
-  }
+        add(property) {
+            this.data.push(property);
+            this.save();
+        }
 
-  getAll() {
-    return this.data;
-  }
+        update(id, updates) {
+            const property = this.data.find(prop => prop.id === id);
+            if (property) {
+                Object.assign(property, updates);
+                this.save();
+            }
+            return property;
+        }
 
-  filter(filterConfig) {
-    let filteredData = [...this.data];
-    if (filterConfig.author) {
-      filteredData = filteredData.filter(obj => obj.author === filterConfig.author);
+        delete(id) {
+            const index = this.data.findIndex(prop => prop.id === id);
+            if (index !== -1) {
+                this.data.splice(index, 1);
+                this.save();
+                return true;
+            }
+            return false;
+        }
+
+        search(query) {
+            const lowerQuery = query.toLowerCase();
+            return this.data.filter(prop =>
+                prop.title.toLowerCase().includes(lowerQuery) ||
+                prop.location.toLowerCase().includes(lowerQuery) ||
+                prop.area.toString().includes(lowerQuery)
+            );
+        }
     }
-    if (filterConfig.createdAt) {
-      filteredData = filteredData.filter(
-        obj => new Date(obj.createdAt).toDateString() === new Date(filterConfig.createdAt).toDateString()
-      );
-    }
-    return filteredData;
-  }
-}
 
-// Add initial data if localStorage is empty
-if (!localStorage.getItem('objectData')) {
-  const objData = [
-     { id: '1', description: 'Описание объекта 1', createdAt: new Date('2024-01-01'), author: 'Иван Иванов', photoLink: 'https://example.com/photo1.jpg' },
-  { id: '2', description: 'Описание объекта 2', createdAt: new Date('2024-01-02'), author: 'Петр Петров', photoLink: 'https://example.com/photo2.jpg' },
-  { id: '3', description: 'Описание объекта 3', createdAt: new Date('2024-01-03'), author: 'Анна Смирнова' },
-  { id: '4', description: 'Описание объекта 4', createdAt: new Date('2024-01-04'), author: 'Иван Иванов' },
-  { id: '5', description: 'Описание объекта 5', createdAt: new Date('2024-01-05'), author: 'Мария Сидорова', photoLink: 'https://example.com/photo5.jpg' },
-  { id: '6', description: 'Описание объекта 6', createdAt: new Date('2024-01-06'), author: 'Дмитрий Васильев' },
-  { id: '7', description: 'Описание объекта 7', createdAt: new Date('2024-01-07'), author: 'Сергей Кузнецов' },
-  { id: '8', description: 'Описание объекта 8', createdAt: new Date('2024-01-08'), author: 'Анна Смирнова' },
-  { id: '9', description: 'Описание объекта 9', createdAt: new Date('2024-01-09'), author: 'Иван Иванов' },
-  { id: '10', description: 'Описание объекта 10', createdAt: new Date('2024-01-10'), author: 'Ольга Николаева', photoLink: 'https://example.com/photo10.jpg' },
-  { id: '11', description: 'Описание объекта 11', createdAt: new Date('2024-01-11'), author: 'Мария Сидорова' },
-  { id: '12', description: 'Описание объекта 12', createdAt: new Date('2024-01-12'), author: 'Сергей Кузнецов' },
-  { id: '13', description: 'Описание объекта 13', createdAt: new Date('2024-01-13'), author: 'Дмитрий Васильев' },
-  { id: '14', description: 'Описание объекта 14', createdAt: new Date('2024-01-14'), author: 'Анна Смирнова' },
-  { id: '15', description: 'Описание объекта 15', createdAt: new Date('2024-01-15'), author: 'Иван Иванов' },
-  { id: '16', description: 'Описание объекта 16', createdAt: new Date('2024-01-16'), author: 'Ольга Николаева' },
-  { id: '17', description: 'Описание объекта 17', createdAt: new Date('2024-01-17'), author: 'Сергей Кузнецов' },
-  { id: '18', description: 'Описание объекта 18', createdAt: new Date('2024-01-18'), author: 'Дмитрий Васильев', photoLink: 'https://example.com/photo18.jpg' },
-  { id: '19', description: 'Описание объекта 19', createdAt: new Date('2024-01-19'), author: 'Мария Сидорова' },
-  { id: '20', description: 'Описание объекта 20', createdAt: new Date('2024-01-20'), author: 'Иван Иванов', photoLink: 'https://example.com/photo20.jpg' },
+    const postList = new PostList();
+    postList.restore(); // Восстановление данных из localStorage
 
-  ];
-  localStorage.setItem('objectData', JSON.stringify(objData));
-}
-    </script>
-<script>
-class View {
-  static renderObjects(objects) {
-    const objectList = document.getElementById('object-list');
-    objectList.innerHTML = '';
-    objects.forEach(obj => {
-      const objCard = document.createElement('div');
-      objCard.className = 'object-card';
-      objCard.innerHTML = `
-        <p><strong>ID:</strong> ${obj.id}</p>
-        <p><strong>Description:</strong> ${obj.description}</p>
-        <p><strong>Author:</strong> ${obj.author}</p>
-        <p><strong>Date:</strong> ${new Date(obj.createdAt).toLocaleDateString()}</p>
-        <div class="controls">
-          <button onclick="controller.editObject('${obj.id}')">Edit</button>
-          <button onclick="controller.deleteObject('${obj.id}')">Delete</button>
-        </div>
-      `;
-      objectList.appendChild(objCard);
-    });
-  }
-
-  static renderUserInfo(user = 'Guest') {
-    const userInfo = document.getElementById('user-info');
-    userInfo.innerText = `Logged in as: ${user}`;
-  }
-}
-    </script>
-<script>
-class Controller {
-  constructor(model, view) {
-    this.model = model;
-    this.view = view;
-
-    this.view.renderUserInfo('Ivan Ivanov');
-    this.view.renderObjects(this.model.getAll());
-  }
-
-  addNewObject() {
-    const description = document.getElementById('add-description').value;
-    const photoLink = document.getElementById('add-photo').value;
-
-    const newObj = {
-      id: (this.model.getAll().length + 1).toString(),
-      description,
-      createdAt: new Date(),
-      author: 'Ivan Ivanov',
-      photoLink
+    // Отображение нужного раздела
+    const showSection = (sectionId) => {
+        sections.forEach(section => {
+            section.style.display = section.id === sectionId ? 'block' : 'none';
+        });
     };
 
-    if (description.length > 200) {
-      alert('Description too long!');
-      return;
-    }
+    // Навигация по меню
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = link.getAttribute('href').substring(1);
+            showSection(target);
+        });
+    });
 
-    this.model.add(newObj);
-    this.view.renderObjects(this.model.getAll());
-    alert('Object added successfully!');
-  }
+    // Обработка формы входа
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const role = document.getElementById('role').value;
+        loginLink.style.display = 'none';
+        logoutLink.style.display = 'block';
+        alert(`Вы вошли как ${role === 'admin' ? 'Администратор' : 'Арендатор'}`);
+        showSection('home');
+    });
 
-  deleteObject(id) {
-    this.model.remove(id);
-    this.view.renderObjects(this.model.getAll());
-    alert('Object deleted successfully!');
-  }
+    // Выход
+    logoutLink.addEventListener('click', () => {
+        loginLink.style.display = 'block';
+        logoutLink.style.display = 'none';
+        alert('Вы вышли из системы.');
+        showSection('home');
+    });
 
-  editObject(id) {
-    const newDescription = prompt('Enter new description (max 200 chars):');
-    if (!newDescription || newDescription.length > 200) {
-      alert('Invalid description!');
-      return;
-    }
+    // Форма добавления
+    const addForm = document.getElementById('add-form');
+    addForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const location = document.getElementById('location').value;
+        const area = parseInt(document.getElementById('area').value);
 
-    this.model.edit(id, { description: newDescription });
-    this.view.renderObjects(this.model.getAll());
-    alert('Object updated successfully!');
-  }
+        postList.add({ id: postList.nextId, title, location, area });
+        alert('Помещение добавлено успешно!');
+        addForm.reset();
+        console.log('Текущие помещения:', postList.data);
+    });
 
-  applyFilter() {
-    const author = document.getElementById('filter-author').value;
-    const date = document.getElementById('filter-date').value;
+    // Форма редактирования
+    const editForm = document.getElementById('edit-form');
+    editForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('edit-id').value);
+        const updates = {
+            title: document.getElementById('new-title').value || undefined,
+            location: document.getElementById('new-location').value || undefined,
+            area: parseInt(document.getElementById('new-area').value) || undefined,
+        };
 
-    const filterConfig = {};
-    if (author) filterConfig.author = author;
-    if (date) filterConfig.createdAt = date;
+        const updatedProperty = postList.update(id, updates);
+        if (updatedProperty) {
+            alert('Информация обновлена успешно!');
+            editForm.reset();
+            console.log('Текущие помещения:', postList.data);
+        } else {
+            alert('Помещение с таким ID не найдено.');
+        }
+    });
 
-    const filteredObjs = this.model.filter(filterConfig);
-    this.view.renderObjects(filteredObjs);
-  }
-}
+    // Форма удаления
+    const deleteForm = document.getElementById('delete-form');
+    deleteForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('delete-id').value);
 
-const model = new Model();
-const view = new View();
-const controller = new Controller(model, view);
+        if (postList.delete(id)) {
+            alert('Помещение удалено успешно!');
+            deleteForm.reset();
+            console.log('Текущие помещения:', postList.data);
+        } else {
+            alert('Помещение с таким ID не найдено.');
+        }
+    });
 
+    // Форма поиска
+    const searchForm = document.getElementById('search-form');
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const query = document.getElementById('search-query').value;
+        const results = postList.search(query);
+
+        const resultsContainer = document.getElementById('search-results');
+        resultsContainer.innerHTML = results.length
+            ? results.map(prop => `
+                <p>
+                    <strong>ID:</strong> ${prop.id}, 
+                    <strong>Название:</strong> ${prop.title}, 
+                    <strong>Местоположение:</strong> ${prop.location}, 
+                    <strong>Площадь:</strong> ${prop.area} кв. м
+                </p>`).join('')
+            : '<p>Ничего не найдено.</p>';
+    });
+});
 </script>
