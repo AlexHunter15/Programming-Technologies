@@ -218,8 +218,26 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Начальный набор данных, если localStorage пуст
                 this.data = [
-                    { id: 1, title: 'Офис на Ленина', location: 'ул. Ленина, 10', area: 100 },
-                    { id: 2, title: 'Склад на Мира', location: 'ул. Мира, 25', area: 300 },
+                     { id: '1', description: 'Описание объекта 1', createdAt: new Date('2024-01-01'), author: 'Иван Иванов', photoLink: 'https://example.com/photo1.jpg' },
+  { id: '2', description: 'Описание объекта 2', createdAt: new Date('2024-01-02'), author: 'Петр Петров', photoLink: 'https://example.com/photo2.jpg' },
+  { id: '3', description: 'Описание объекта 3', createdAt: new Date('2024-01-03'), author: 'Анна Смирнова' },
+  { id: '4', description: 'Описание объекта 4', createdAt: new Date('2024-01-04'), author: 'Иван Иванов' },
+  { id: '5', description: 'Описание объекта 5', createdAt: new Date('2024-01-05'), author: 'Мария Сидорова', photoLink: 'https://example.com/photo5.jpg' },
+  { id: '6', description: 'Описание объекта 6', createdAt: new Date('2024-01-06'), author: 'Дмитрий Васильев' },
+  { id: '7', description: 'Описание объекта 7', createdAt: new Date('2024-01-07'), author: 'Сергей Кузнецов' },
+  { id: '8', description: 'Описание объекта 8', createdAt: new Date('2024-01-08'), author: 'Анна Смирнова' },
+  { id: '9', description: 'Описание объекта 9', createdAt: new Date('2024-01-09'), author: 'Иван Иванов' },
+  { id: '10', description: 'Описание объекта 10', createdAt: new Date('2024-01-10'), author: 'Ольга Николаева', photoLink: 'https://example.com/photo10.jpg' },
+  { id: '11', description: 'Описание объекта 11', createdAt: new Date('2024-01-11'), author: 'Мария Сидорова' },
+  { id: '12', description: 'Описание объекта 12', createdAt: new Date('2024-01-12'), author: 'Сергей Кузнецов' },
+  { id: '13', description: 'Описание объекта 13', createdAt: new Date('2024-01-13'), author: 'Дмитрий Васильев' },
+  { id: '14', description: 'Описание объекта 14', createdAt: new Date('2024-01-14'), author: 'Анна Смирнова' },
+  { id: '15', description: 'Описание объекта 15', createdAt: new Date('2024-01-15'), author: 'Иван Иванов' },
+  { id: '16', description: 'Описание объекта 16', createdAt: new Date('2024-01-16'), author: 'Ольга Николаева' },
+  { id: '17', description: 'Описание объекта 17', createdAt: new Date('2024-01-17'), author: 'Сергей Кузнецов' },
+  { id: '18', description: 'Описание объекта 18', createdAt: new Date('2024-01-18'), author: 'Дмитрий Васильев', photoLink: 'https://example.com/photo18.jpg' },
+  { id: '19', description: 'Описание объекта 19', createdAt: new Date('2024-01-19'), author: 'Мария Сидорова' },
+  { id: '20', description: 'Описание объекта 20', createdAt: new Date('2024-01-20'), author: 'Иван Иванов', photoLink: 'https://example.com/photo20.jpg' },
                 ];
                 this.save();
             }
