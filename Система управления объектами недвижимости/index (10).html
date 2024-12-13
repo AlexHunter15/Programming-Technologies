@@ -45,11 +45,10 @@
             </form>
         </section>
 
-        <!-- Остальные формы -->
         <!-- Форма добавления информации -->
         <section id="add-info" style="display:none;">
             <h2>Добавить информацию о новом помещении</h2>
-            <form>
+            <form id="add-form">
                 <label for="title">Название помещения:</label>
                 <input type="text" id="title" required>
                 <label for="location">Местоположение:</label>
@@ -59,14 +58,47 @@
                 <button type="submit">Добавить помещение</button>
             </form>
         </section>
-<section id="object-list-container">
-  <h2>Список объектов</h2>
-  <div id="object-list"></div>
-</section>
 
-        <!-- Аналогично формы редактирования, удаления, поиска информации -->
+        <!-- Форма редактирования информации -->
+        <section id="edit-info" style="display:none;">
+            <h2>Редактировать информацию о помещении</h2>
+            <form id="edit-form">
+                <label for="edit-id">ID помещения:</label>
+                <input type="number" id="edit-id" required>
+                <label for="new-title">Новое название:</label>
+                <input type="text" id="new-title">
+                <label for="new-location">Новое местоположение:</label>
+                <input type="text" id="new-location">
+                <label for="new-area">Новая площадь (кв. м):</label>
+                <input type="number" id="new-area">
+                <button type="submit">Сохранить изменения</button>
+            </form>
+        </section>
 
+        <!-- Форма удаления информации -->
+        <section id="delete-info" style="display:none;">
+            <h2>Удалить помещение</h2>
+            <form id="delete-form">
+                <label for="delete-id">ID помещения:</label>
+                <input type="number" id="delete-id" required>
+                <button type="submit">Удалить помещение</button>
+            </form>
+        </section>
+
+        <!-- Форма поиска информации -->
+        <section id="search-info" style="display:none;">
+            <h2>Поиск информации</h2>
+            <form id="search-form">
+                <label for="search-query">Введите критерии поиска:</label>
+                <input type="text" id="search-query" placeholder="Название, местоположение и т.д." required>
+                <button type="submit">Найти</button>
+            </form>
+            <div id="search-results">
+                <!-- Здесь будут отображаться результаты поиска -->
+            </div>
+        </section>
     </main>
+
     <!-- Нижняя информационная часть (footer) -->
     <footer>
         <p>&copy; 2024 Информационная система недвижимости</p>
@@ -76,6 +108,7 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 
 <style>
 /* Сброс стилей */
@@ -162,96 +195,178 @@ footer p {
 }
 </style>
 <script>
-let currentUser = "Ivan Ivanov"; // Текущий пользователь. Если null, пользователь не авторизован.
-
-let objData = [
-  { id: "1", description: "Описание объекта 1", createdAt: new Date("2024-01-01"), author: "Ivan Ivanov" },
-  { id: "2", description: "Описание объекта 2", createdAt: new Date("2024-01-02"), author: "Peter Petrov" },
-  { id: "3", description: "Описание объекта 3", createdAt: new Date("2024-01-03"), author: "Anna Smirnova" },
-];
-
-// Контейнер для объектов
-const objectList = document.getElementById("object-list");
-
-// Отображение текущего пользователя
-function displayCurrentUser() {
-  const userContainer = document.getElementById("current-user");
-  if (!userContainer) return;
-  userContainer.textContent = currentUser
-    ? `Пользователь: ${currentUser}`
-    : "Вы не авторизованы";
-}
-
-// 1. Отображение объектов на HTML-странице
-function displayObjects(objects) {
-  objectList.innerHTML = ""; // Очистка
-  objects.forEach((obj) => {
-    const objElement = document.createElement("div");
-    objElement.className = "object-item";
-    objElement.id = `obj-${obj.id}`;
-    objElement.innerHTML = `
-      <h3>${obj.description}</h3>
-      <p>Автор: ${obj.author}</p>
-      <p>Дата создания: ${new Date(obj.createdAt).toLocaleDateString()}</p>
-      ${currentUser === obj.author ? `
-        <button onclick="editObject('${obj.id}')">Редактировать</button>
-        <button onclick="removeObject('${obj.id}')">Удалить</button>
-      ` : ""}
-    `;
-    objectList.appendChild(objElement);
-  });
-}
-
-// 2. Добавление объекта
-function addObject(obj) {
-  if (!obj || !obj.id || !obj.description || !obj.author || !(obj.createdAt instanceof Date)) {
-    console.error("Некорректные данные объекта.");
-    return;
+class Model {
+  constructor(storageKey = 'objectData') {
+    this.storageKey = storageKey;
+    this.data = this.restore();
   }
-  objData.push(obj);
-  displayObjects(objData);
-}
 
-// 3. Удаление объекта
-function removeObject(id) {
-  objData = objData.filter((obj) => obj.id !== id);
-  displayObjects(objData);
-}
-
-// 4. Редактирование объекта
-function editObject(id) {
-  const objIndex = objData.findIndex((obj) => obj.id === id);
-  if (objIndex === -1) {
-    console.error("Объект не найден.");
-    return;
+  save() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.data));
   }
-  const newDescription = prompt("Введите новое описание:", objData[objIndex].description);
-  if (newDescription) {
-    objData[objIndex].description = newDescription;
-    displayObjects(objData);
+
+  restore() {
+    const storedData = localStorage.getItem(this.storageKey);
+    return storedData ? JSON.parse(storedData) : [];
+  }
+
+  add(obj) {
+    this.data.push(obj);
+    this.save();
+    return true;
+  }
+
+  remove(id) {
+    const index = this.data.findIndex((obj) => obj.id === id);
+    if (index === -1) return false;
+    this.data.splice(index, 1);
+    this.save();
+    return true;
+  }
+
+  edit(id, updatedFields) {
+    const index = this.data.findIndex((obj) => obj.id === id);
+    if (index === -1) return false;
+    this.data[index] = { ...this.data[index], ...updatedFields };
+    this.save();
+    return true;
+  }
+
+  getAll() {
+    return this.data;
+  }
+
+  filter(filterConfig) {
+    let filteredData = [...this.data];
+    if (filterConfig.author) {
+      filteredData = filteredData.filter(obj => obj.author === filterConfig.author);
+    }
+    if (filterConfig.createdAt) {
+      filteredData = filteredData.filter(
+        obj => new Date(obj.createdAt).toDateString() === new Date(filterConfig.createdAt).toDateString()
+      );
+    }
+    return filteredData;
   }
 }
 
-// 5. Фильтрация объектов
-function filterObjects(filterConfig) {
-  let filteredData = [...objData];
-  if (filterConfig.author) {
-    filteredData = filteredData.filter((obj) => obj.author === filterConfig.author);
+// Add initial data if localStorage is empty
+if (!localStorage.getItem('objectData')) {
+  const objData = [
+     { id: '1', description: 'Описание объекта 1', createdAt: new Date('2024-01-01'), author: 'Иван Иванов', photoLink: 'https://example.com/photo1.jpg' },
+  { id: '2', description: 'Описание объекта 2', createdAt: new Date('2024-01-02'), author: 'Петр Петров', photoLink: 'https://example.com/photo2.jpg' },
+  { id: '3', description: 'Описание объекта 3', createdAt: new Date('2024-01-03'), author: 'Анна Смирнова' },
+  { id: '4', description: 'Описание объекта 4', createdAt: new Date('2024-01-04'), author: 'Иван Иванов' },
+  { id: '5', description: 'Описание объекта 5', createdAt: new Date('2024-01-05'), author: 'Мария Сидорова', photoLink: 'https://example.com/photo5.jpg' },
+  { id: '6', description: 'Описание объекта 6', createdAt: new Date('2024-01-06'), author: 'Дмитрий Васильев' },
+  { id: '7', description: 'Описание объекта 7', createdAt: new Date('2024-01-07'), author: 'Сергей Кузнецов' },
+  { id: '8', description: 'Описание объекта 8', createdAt: new Date('2024-01-08'), author: 'Анна Смирнова' },
+  { id: '9', description: 'Описание объекта 9', createdAt: new Date('2024-01-09'), author: 'Иван Иванов' },
+  { id: '10', description: 'Описание объекта 10', createdAt: new Date('2024-01-10'), author: 'Ольга Николаева', photoLink: 'https://example.com/photo10.jpg' },
+  { id: '11', description: 'Описание объекта 11', createdAt: new Date('2024-01-11'), author: 'Мария Сидорова' },
+  { id: '12', description: 'Описание объекта 12', createdAt: new Date('2024-01-12'), author: 'Сергей Кузнецов' },
+  { id: '13', description: 'Описание объекта 13', createdAt: new Date('2024-01-13'), author: 'Дмитрий Васильев' },
+  { id: '14', description: 'Описание объекта 14', createdAt: new Date('2024-01-14'), author: 'Анна Смирнова' },
+  { id: '15', description: 'Описание объекта 15', createdAt: new Date('2024-01-15'), author: 'Иван Иванов' },
+  { id: '16', description: 'Описание объекта 16', createdAt: new Date('2024-01-16'), author: 'Ольга Николаева' },
+  { id: '17', description: 'Описание объекта 17', createdAt: new Date('2024-01-17'), author: 'Сергей Кузнецов' },
+  { id: '18', description: 'Описание объекта 18', createdAt: new Date('2024-01-18'), author: 'Дмитрий Васильев', photoLink: 'https://example.com/photo18.jpg' },
+  { id: '19', description: 'Описание объекта 19', createdAt: new Date('2024-01-19'), author: 'Мария Сидорова' },
+  { id: '20', description: 'Описание объекта 20', createdAt: new Date('2024-01-20'), author: 'Иван Иванов', photoLink: 'https://example.com/photo20.jpg' },
+
+  ];
+  localStorage.setItem('objectData', JSON.stringify(objData));
+}
+class View {
+  static renderObjects(objects) {
+    const objectList = document.getElementById('object-list');
+    objectList.innerHTML = '';
+    objects.forEach(obj => {
+      const objCard = document.createElement('div');
+      objCard.className = 'object-card';
+      objCard.innerHTML = `
+        <p><strong>ID:</strong> ${obj.id}</p>
+        <p><strong>Description:</strong> ${obj.description}</p>
+        <p><strong>Author:</strong> ${obj.author}</p>
+        <p><strong>Date:</strong> ${new Date(obj.createdAt).toLocaleDateString()}</p>
+        <div class="controls">
+          <button onclick="controller.editObject('${obj.id}')">Edit</button>
+          <button onclick="controller.deleteObject('${obj.id}')">Delete</button>
+        </div>
+      `;
+      objectList.appendChild(objCard);
+    });
   }
-  if (filterConfig.createdAt) {
-    filteredData = filteredData.filter(
-      (obj) => new Date(obj.createdAt).toDateString() === new Date(filterConfig.createdAt).toDateString()
-    );
+
+  static renderUserInfo(user = 'Guest') {
+    const userInfo = document.getElementById('user-info');
+    userInfo.innerText = `Logged in as: ${user}`;
   }
-  displayObjects(filteredData);
+}
+class Controller {
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
+
+    this.view.renderUserInfo('Ivan Ivanov');
+    this.view.renderObjects(this.model.getAll());
+  }
+
+  addNewObject() {
+    const description = document.getElementById('add-description').value;
+    const photoLink = document.getElementById('add-photo').value;
+
+    const newObj = {
+      id: (this.model.getAll().length + 1).toString(),
+      description,
+      createdAt: new Date(),
+      author: 'Ivan Ivanov',
+      photoLink
+    };
+
+    if (description.length > 200) {
+      alert('Description too long!');
+      return;
+    }
+
+    this.model.add(newObj);
+    this.view.renderObjects(this.model.getAll());
+    alert('Object added successfully!');
+  }
+
+  deleteObject(id) {
+    this.model.remove(id);
+    this.view.renderObjects(this.model.getAll());
+    alert('Object deleted successfully!');
+  }
+
+  editObject(id) {
+    const newDescription = prompt('Enter new description (max 200 chars):');
+    if (!newDescription || newDescription.length > 200) {
+      alert('Invalid description!');
+      return;
+    }
+
+    this.model.edit(id, { description: newDescription });
+    this.view.renderObjects(this.model.getAll());
+    alert('Object updated successfully!');
+  }
+
+  applyFilter() {
+    const author = document.getElementById('filter-author').value;
+    const date = document.getElementById('filter-date').value;
+
+    const filterConfig = {};
+    if (author) filterConfig.author = author;
+    if (date) filterConfig.createdAt = date;
+
+    const filteredObjs = this.model.filter(filterConfig);
+    this.view.renderObjects(filteredObjs);
+  }
 }
 
-// Инициализация
-function init() {
-  displayCurrentUser();
-  displayObjects(objData);
-}
-
-init();
+const model = new Model();
+const view = new View();
+const controller = new Controller(model, view);
 
 </script>
