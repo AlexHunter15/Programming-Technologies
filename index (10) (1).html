@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Информационная Система</title>
     <style>
+        /* Стили оставлены без изменений из предыдущего примера */
+        /* Сброс стилей */
         * {
             margin: 0;
             padding: 0;
@@ -86,11 +88,6 @@
         footer p {
             font-size: 0.9em;
         }
-
-        #login-form {
-            display: block;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
@@ -110,13 +107,6 @@
     <main>
         <section id="home">
             <h2>Добро пожаловать!</h2>
-            <form id="login-form">
-                <label for="username">Имя пользователя:</label>
-                <input type="text" id="username" required>
-                <label for="password">Пароль:</label>
-                <input type="password" id="password" required>
-                <button type="submit">Войти</button>
-            </form>
         </section>
 
         <section id="add-info" style="display:none;">
@@ -176,21 +166,26 @@
         class PropertyModel {
             constructor() {
                 this.key = 'properties';
-                this.data = [];
-                this.restore();
+                this.properties = [];
+                this.load();
+            }
+
+            load() {
+                const data = localStorage.getItem(this.key);
+                this.properties = data ? JSON.parse(data) : [];
             }
 
             save() {
-                localStorage.setItem(this.key, JSON.stringify(this.data));
+                localStorage.setItem(this.key, JSON.stringify(this.properties));
             }
-
-            restore() {
-                const storedData = localStorage.getItem(this.key);
-                if (storedData) {
-                    this.data = JSON.parse(storedData);
-                } else {
-                    this.data = [
-                        { id: '1', description: 'Описание объекта 1', createdAt: new Date('2024-01-01'), author: 'Иван Иванов', photoLink: 'https://example.com/photo1.jpg' },
+ restore() {
+            const storedData = localStorage.getItem(this.key);
+            if (storedData) {
+                this.data = JSON.parse(storedData);
+            } else {
+                // Начальный набор данных, если localStorage пуст
+                this.data = [
+                     { id: '1', description: 'Описание объекта 1', createdAt: new Date('2024-01-01'), author: 'Иван Иванов', photoLink: 'https://example.com/photo1.jpg' },
   { id: '2', description: 'Описание объекта 2', createdAt: new Date('2024-01-02'), author: 'Петр Петров', photoLink: 'https://example.com/photo2.jpg' },
   { id: '3', description: 'Описание объекта 3', createdAt: new Date('2024-01-03'), author: 'Анна Смирнова' },
   { id: '4', description: 'Описание объекта 4', createdAt: new Date('2024-01-04'), author: 'Иван Иванов' },
@@ -210,42 +205,29 @@
   { id: '18', description: 'Описание объекта 18', createdAt: new Date('2024-01-18'), author: 'Дмитрий Васильев', photoLink: 'https://example.com/photo18.jpg' },
   { id: '19', description: 'Описание объекта 19', createdAt: new Date('2024-01-19'), author: 'Мария Сидорова' },
   { id: '20', description: 'Описание объекта 20', createdAt: new Date('2024-01-20'), author: 'Иван Иванов', photoLink: 'https://example.com/photo20.jpg' },
-                    ];
-                    this.save();
-                }
-            }
-
+                ];
+                this.save();
+            }}
             add(property) {
-                this.data.push(property);
+                this.properties.push(property);
                 this.save();
             }
 
             update(id, updates) {
-                const property = this.data.find(prop => prop.id === id);
-                if (property) Object.assign(property, updates);
+                const prop = this.properties.find(p => p.id === id);
+                if (prop) Object.assign(prop, updates);
                 this.save();
-                return property;
             }
 
             delete(id) {
-                const index = this.data.findIndex(prop => prop.id === id);
-                if (index !== -1) {
-                    this.data.splice(index, 1);
-                    this.save();
-                    return true;
-                }
-                return false;
+                this.properties = this.properties.filter(p => p.id !== id);
+                this.save();
             }
 
             search(query) {
-                const lowerQuery = query.toLowerCase();
-                return this.data.filter(prop =>
-                    (prop.description || '').toLowerCase().includes(lowerQuery)
-                );
-            }
-
-            get nextId() {
-                return this.data.length ? Math.max(...this.data.map(obj => obj.id)) + 1 : 1;
+                const term = query.toLowerCase();
+                return this.properties.filter(p => 
+                    p.title.toLowerCase().includes(term));
             }
         }
 
@@ -260,25 +242,8 @@
             static renderSearchResults(results) {
                 const container = document.getElementById('search-results');
                 container.innerHTML = results.length
-                    ? results.map(r => `
-                        <p>
-                            <strong>ID:</strong> ${r.id}, 
-                            <strong>Описание:</strong> ${r.description}
-                        </p>`).join('')
-                    : '<p>Результатов не найдено.</p>';
-            }
-
-            static resetForm(formId) {
-                document.getElementById(formId).reset();
-            }
-
-            static showMessage(message) {
-                alert(message);
-            }
-
-            static toggleLoginForm(show) {
-                const loginForm = document.getElementById('login-form');
-                loginForm.style.display = show ? 'block' : 'none';
+                    ? results.map(r => `<p>${r.title}</p>`).join('')
+                    : 'No results!';
             }
         }
 
@@ -286,100 +251,16 @@
         class PropertyController {
             constructor() {
                 this.model = new PropertyModel();
-                this.init();
+                this.bindEvents();
             }
 
-            init() {
-                this.bindLoginForm();
-                this.bindNavigation();
-                this.bindForms();
-            }
-
-            bindLoginForm() {
-                document.getElementById('login-form').addEventListener('submit', (e) => {
+            bindEvents() {
+                // Add
+                document.getElementById('add-form').addEventListener('submit', e => {
                     e.preventDefault();
-                    const username = document.getElementById('username').value;
-                    const password = document.getElementById('password').value;
-                    this.login(username, password);
-                });
-            }
-
-            login(username, password) {
-                // Простейшая проверка пароля
-                if (username === 'admin' && password === 'admin') {
-                    localStorage.setItem('loggedIn', 'true');
-                    PropertyView.toggleLoginForm(false);
-                    PropertyView.toggleSection('add-info');  // Показываем секцию для админа
-                } else {
-                    alert('Неверные данные');
-                }
-            }
-
-            bindNavigation() {
-                const navLinks = document.querySelectorAll('header nav ul li a');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const target = link.getAttribute('href').substring(1);
-                        PropertyView.toggleSection(target);
-                    });
-                });
-            }
-
-            bindForms() {
-                // Обработчики форм для добавления, редактирования, удаления и поиска
-                document.getElementById('add-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const title = document.getElementById('title').value;
-                    const location = document.getElementById('location').value;
-                    const area = parseInt(document.getElementById('area').value);
-
-                    this.model.add({ id: this.model.nextId, description: title, location, area });
-                    PropertyView.showMessage('Объект добавлен успешно!');
-                    PropertyView.resetForm('add-form');
-                });
-
-                document.getElementById('edit-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const id = parseInt(document.getElementById('edit-id').value);
-                    const updates = {
-                        description: document.getElementById('new-title').value || undefined,
-                        location: document.getElementById('new-location').value || undefined,
-                        area: parseInt(document.getElementById('new-area').value) || undefined,
-                    };
-
-                    const updatedProperty = this.model.update(id, updates);
-                    if (updatedProperty) {
-                        PropertyView.showMessage('Объект обновлен успешно!');
-                    } else {
-                        PropertyView.showMessage('Объект не найден!');
-                    }
-                    PropertyView.resetForm('edit-form');
-                });
-
-                document.getElementById('delete-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const id = parseInt(document.getElementById('delete-id').value);
-                    const success = this.model.delete(id);
-                    if (success) {
-                        PropertyView.showMessage('Объект удален успешно!');
-                    } else {
-                        PropertyView.showMessage('Объект не найден!');
-                    }
-                    PropertyView.resetForm('delete-form');
-                });
-
-                document.getElementById('search-form').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const query = document.getElementById('search-query').value;
-                    const results = this.model.search(query);
-                    PropertyView.renderSearchResults(results);
                 });
             }
         }
-
-        // Initialize app
-        new PropertyController();
     </script>
 </body>
 </html>
