@@ -5,17 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление объектами недвижимости</title>
     <style>
-        /* Простой стиль для визуализации */
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        section {
-            display: none;
-        }
-        #admin-section {
-            display: none;
-        }
+        /* Сброс стилей */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+header, footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+header h1, footer p {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+h2 {
+    color: #5a67d8;
+    margin-bottom: 10px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #5a67d8;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+form button:hover {
+    background-color: #4c51bf;
+}
+
+.hint {
+    font-size: 0.9em;
+    color: #666;
+}
+
+footer p {
+    font-size: 0.9em;
+}
     </style>
 </head>
 <body>
