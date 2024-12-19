@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информационная Система</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Заголовок (header) -->
+    <header>
+        <h1>Информационная система для управления объектами недвижимости</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#add-info">Добавить информацию</a></li>
+                <li><a href="#edit-info">Редактировать информацию</a></li>
+                <li><a href="#delete-info">Удалить информацию</a></li>
+                <li><a href="#search-info">Поиск информации</a></li>
+                <li><a href="#login" id="login-link">Вход</a></li>
+                <li id="logout-link" style="display:none;"><a href="#home">Выход</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Основное содержимое -->
+    <main>
+        <section id="home">
+            <h2>Добро пожаловать!</h2>
+            <p>Выберите действие из меню, чтобы управлять информацией о помещениях.</p>
+        </section>
+
+        <!-- Форма входа -->
+        <section id="login" style="display:none;">
+            <h2>Вход</h2>
+            <form id="login-form">
+                <label for="username">Имя пользователя:</label>
+                <input type="text" id="username" required>
+                <label for="role">Роль:</label>
+                <select id="role">
+                    <option value="tenant">Арендатор</option>
+                    <option value="admin">Администратор</option>
+                </select>
+                <button type="submit">Войти</button>
+            </form>
+        </section>
+
+        <!-- Остальные формы -->
+        <!-- Форма добавления информации -->
+        <section id="add-info" style="display:none;">
+            <h2>Добавить информацию о новом помещении</h2>
+            <form>
+                <label for="title">Название помещения:</label>
+                <input type="text" id="title" required>
+                <label for="location">Местоположение:</label>
+                <input type="text" id="location" required>
+                <label for="area">Площадь (кв. м):</label>
+                <input type="number" id="area" required>
+                <button type="submit">Добавить помещение</button>
+            </form>
+        </section>
+<section id="object-list-container">
+  <h2>Список объектов</h2>
+  <div id="object-list"></div>
+</section>
+
+        <!-- Аналогично формы редактирования, удаления, поиска информации -->
+
+    </main>
+    <!-- Нижняя информационная часть (footer) -->
+    <footer>
+        <p>&copy; 2024 Информационная система недвижимости</p>
+    </footer>
+
+    <!-- Подключение JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
+
+<style>
+/* Сброс стилей */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+header, footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+header h1, footer p {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    padding: 20px;
+}
+
+h2 {
+    color: #5a67d8;
+    margin-bottom: 10px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #5a67d8;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+form button:hover {
+    background-color: #4c51bf;
+}
+
+.hint {
+    font-size: 0.9em;
+    color: #666;
+}
+
+footer p {
+    font-size: 0.9em;
+}
+</style>
+<script>
+let currentUser = "Ivan Ivanov"; // Текущий пользователь. Если null, пользователь не авторизован.
+
+let objData = [
+  { id: "1", description: "Описание объекта 1", createdAt: new Date("2024-01-01"), author: "Ivan Ivanov" },
+  { id: "2", description: "Описание объекта 2", createdAt: new Date("2024-01-02"), author: "Peter Petrov" },
+  { id: "3", description: "Описание объекта 3", createdAt: new Date("2024-01-03"), author: "Anna Smirnova" },
+];
+
+// Контейнер для объектов
+const objectList = document.getElementById("object-list");
+
+// Отображение текущего пользователя
+function displayCurrentUser() {
+  const userContainer = document.getElementById("current-user");
+  if (!userContainer) return;
+  userContainer.textContent = currentUser
+    ? `Пользователь: ${currentUser}`
+    : "Вы не авторизованы";
+}
+
+// 1. Отображение объектов на HTML-странице
+function displayObjects(objects) {
+  objectList.innerHTML = ""; // Очистка
+  objects.forEach((obj) => {
+    const objElement = document.createElement("div");
+    objElement.className = "object-item";
+    objElement.id = `obj-${obj.id}`;
+    objElement.innerHTML = `
+      <h3>${obj.description}</h3>
+      <p>Автор: ${obj.author}</p>
+      <p>Дата создания: ${new Date(obj.createdAt).toLocaleDateString()}</p>
+      ${currentUser === obj.author ? `
+        <button onclick="editObject('${obj.id}')">Редактировать</button>
+        <button onclick="removeObject('${obj.id}')">Удалить</button>
+      ` : ""}
+    `;
+    objectList.appendChild(objElement);
+  });
+}
+
+// 2. Добавление объекта
+function addObject(obj) {
+  if (!obj || !obj.id || !obj.description || !obj.author || !(obj.createdAt instanceof Date)) {
+    console.error("Некорректные данные объекта.");
+    return;
+  }
+  objData.push(obj);
+  displayObjects(objData);
+}
+
+// 3. Удаление объекта
+function removeObject(id) {
+  objData = objData.filter((obj) => obj.id !== id);
+  displayObjects(objData);
+}
+
+// 4. Редактирование объекта
+function editObject(id) {
+  const objIndex = objData.findIndex((obj) => obj.id === id);
+  if (objIndex === -1) {
+    console.error("Объект не найден.");
+    return;
+  }
+  const newDescription = prompt("Введите новое описание:", objData[objIndex].description);
+  if (newDescription) {
+    objData[objIndex].description = newDescription;
+    displayObjects(objData);
+  }
+}
+
+// 5. Фильтрация объектов
+function filterObjects(filterConfig) {
+  let filteredData = [...objData];
+  if (filterConfig.author) {
+    filteredData = filteredData.filter((obj) => obj.author === filterConfig.author);
+  }
+  if (filterConfig.createdAt) {
+    filteredData = filteredData.filter(
+      (obj) => new Date(obj.createdAt).toDateString() === new Date(filterConfig.createdAt).toDateString()
+    );
+  }
+  displayObjects(filteredData);
+}
+
+// Инициализация
+function init() {
+  displayCurrentUser();
+  displayObjects(objData);
+}
+
+init();
+
+</script>
